@@ -1,6 +1,7 @@
 package com.zhuby.c3p0.connimpl;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -9,19 +10,21 @@ import java.sql.SQLException;
  * 2.使用了单态模式，注释中有单态模式的使用注意事项。
  * Created by zhuby on 2016/5/4.
  */
-public class ConnectionPool {
+public class ConfigConnectionPool {
     private ComboPooledDataSource ds = null;
-    private static ConnectionPool connectionPool= null;
+    private static ConfigConnectionPool connectionPool= null;
+    private String propertyFileName = "myc3p0";
+
     //单态模式，一般是private的构造方法
     //使用了 “懒实例化”的方式，第一次使用的时候，会实例化。
-    private ConnectionPool() {
-        ds = new ComboPooledDataSource();
+    private ConfigConnectionPool(){
+        ds = new ComboPooledDataSource( propertyFileName );
     }
 
     // synchronized 关键字必须得增加，否则在多线程并发的情况下，会实例化出多个实例
-    public static synchronized ConnectionPool getInstance(){
+    public static synchronized ConfigConnectionPool getInstance(){
         if(connectionPool == null){
-            return (new ConnectionPool());
+            return (new ConfigConnectionPool());
         }else{
             return connectionPool;
         }
@@ -38,11 +41,12 @@ public class ConnectionPool {
 
     public void printConnectionDetail( ){
         System.out.println("URL: "+ds.getJdbcUrl());
-
-
+        System.out.println("maxPoolSize: "+ds.getMaxPoolSize());
+        System.out.println("maxIdelTime: "+ds.getMaxIdleTime());
     }
+
     public static void  main(String[] args){
-        ConnectionPool pool = ConnectionPool.getInstance();
+        ConfigConnectionPool pool = ConfigConnectionPool.getInstance();
         pool.printConnectionDetail();
     }
 

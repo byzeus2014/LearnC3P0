@@ -1,4 +1,5 @@
 package com.zhuby.c3p0;
+import com.zhuby.c3p0.connimpl.ConfigConnectionPool;
 import com.zhuby.c3p0.connimpl.ConnectionPool;
 
 import java.sql.Connection;
@@ -7,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * 执行SQL
+ *
  * Created by zhuby on 2016/5/4.
  */
 public class QueryHandler {
@@ -28,10 +31,10 @@ public class QueryHandler {
             e.printStackTrace();
         }finally {
             try {
-                if(rs==null){
+                if(rs!=null){
                     rs.close();
                 }
-                if(pstat==null){
+                if(pstat!=null){
                     pstat.close();
                 }
 
@@ -40,5 +43,47 @@ public class QueryHandler {
             }
         }
         return sysdate;
+    }
+
+    public void updateOne(  ){
+        Connection conn = ConfigConnectionPool.getInstance().getConnection();
+
+        String sql = "update pm4h_ad.test_tab t set t.name='new name' where t.id = '111'";
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+
+        try {
+            pstat = conn.prepareStatement(sql);
+            boolean result = pstat.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(pstat!=null){
+                    pstat.close();
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public  static void main(String[] args){
+        QueryHandler qh = new QueryHandler();
+        System.out.println("query test : ");
+        System.out.println(  qh.queryOne() );
+
+
+        System.out.println("update test");
+        //用来测试 debug连接泄露
+        // maxIdleTime=60
+        // unreturnedConnectionTimeout= 70
+        // 正常情况下，一条SQL执行完，最大空闲60s就会被回收，假设SQL执行都小于10s，当sql超过70s还没有回收的话，
+        // 说明该连接有问题。
+        // debugUnreturnedConnectionStackTraces配置了这个参数后，就会把连接的堆栈打印出来。
+        qh.updateOne();
+        System.out.println("end");
     }
 }
