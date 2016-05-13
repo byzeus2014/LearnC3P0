@@ -13,6 +13,7 @@ import java.sql.SQLException;
 public class ConfigConnectionPool {
     private ComboPooledDataSource ds = null;
     private static ConfigConnectionPool connectionPool= null;
+    // 文件名必须是 c3p0.properties，指定使用这个配置文件中特殊的配置。
     private String propertyFileName = "myc3p0";
 
     //单态模式，一般是private的构造方法
