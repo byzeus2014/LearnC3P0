@@ -1,6 +1,5 @@
 package com.zhuby.c3p0;
 import com.zhuby.c3p0.connimpl.ConfigConnectionPool;
-import com.zhuby.c3p0.connimpl.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,11 +12,12 @@ import java.sql.SQLException;
  * Created by zhuby on 2016/5/4.
  */
 public class QueryHandler {
+    private ConfigConnectionPool connPool = ConfigConnectionPool.getInstance();
 
     public String queryOne( ){
-        Connection conn = ConnectionPool.getInstance().getConnection();
+        Connection conn = connPool.getConnection();
         String sysdate = null;
-        String sql = "select sysdate from dual";
+        String sql = "select count(1) from pm4h_mo.mdl_resmodel t";
         PreparedStatement pstat = null;
         ResultSet rs = null;
 
@@ -46,7 +46,7 @@ public class QueryHandler {
     }
 
     public void updateOne(  ){
-        Connection conn = ConfigConnectionPool.getInstance().getConnection();
+        Connection conn = connPool.getConnection();
 
         String sql = "update pm4h_ad.test_tab t set t.name='new name' where t.id = '111'";
         PreparedStatement pstat = null;
@@ -84,6 +84,7 @@ public class QueryHandler {
         // 说明该连接有问题。
         // debugUnreturnedConnectionStackTraces配置了这个参数后，就会把连接的堆栈打印出来。
         qh.updateOne();
+        qh.connPool.printConnectionDetail();
         System.out.println("end");
     }
 }

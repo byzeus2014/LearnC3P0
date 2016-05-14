@@ -44,6 +44,16 @@ public class ConfigConnectionPool {
         System.out.println("URL: "+ds.getJdbcUrl());
         System.out.println("maxPoolSize: "+ds.getMaxPoolSize());
         System.out.println("maxIdelTime: "+ds.getMaxIdleTime());
+
+        try {
+            System.out.println("NumConnectionsAllUsers: "+ds.getNumConnectionsAllUsers());
+            System.out.println("NumConnectionsDefaultUser: "+ ds.getNumConnectionsDefaultUser() );
+            System.out.println("NumConnections: "+ ds.getNumConnections() );
+//            ds.getNumCo
+            System.out.println("NumUserPools: "+ds.getNumUserPools());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void  main(String[] args){
